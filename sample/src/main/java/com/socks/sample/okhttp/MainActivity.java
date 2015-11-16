@@ -2,28 +2,36 @@ package com.socks.sample.okhttp;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.socks.library.KLog;
-import com.socks.okhttp.plus.callback.OkHttpCallback;
+import com.socks.okhttp.plus.OkHttpClientManager;
 import com.socks.okhttp.plus.request.OkHttpRequest;
+import com.socks.sample.okhttp.callback.OkHttpResultCallback;
+import com.socks.sample.okhttp.model.User;
+import com.socks.sample.okhttp.util.TestUrls;
+import com.socks.sample.okhttp.util.Utils;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+import okio.Buffer;
+
+public class MainActivity extends AppCompatActivity implements TestUrls {
 
     private TextView tv_response;
     private TextView tv_header;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,84 +39,94 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tv_response = (TextView) findViewById(R.id.tv_response);
         tv_header = (TextView) findViewById(R.id.tv_header);
+
+        actionBar = getSupportActionBar();
+
+        initHttpClient();
     }
 
+    private void initHttpClient() {
+        OkHttpClientManager.getInstance().setCertificates(new InputStream[]{
+                new Buffer().writeUtf8(CER_12306).inputStream()});
+        OkHttpClientManager.getInstance().getOkHttpClient().setConnectTimeout(10 * 1000, TimeUnit.MILLISECONDS);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Test Code
+    ///////////////////////////////////////////////////////////////////////////
+
     public void getUser(View view) {
-        String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/user.gson";
-        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<User>() {
+        new OkHttpRequest.Builder().url(URL_USER).get(new OkHttpResultCallback<User>(actionBar) {
             @Override
             public void onError(Request request, Exception e) {
-                KLog.e(e.getMessage());
+                tv_response.setText(e.getMessage());
             }
 
             @Override
             public void onResponse(Response response, User data) {
                 tv_response.setText(data.toString());
-                KLog.d("code = " + response.code());
+                tv_header.setText(Utils.getResponse(response));
             }
         });
     }
 
     public void getUsers(View view) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "zhy");
-        String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/users.gson";
-        new OkHttpRequest.Builder().url(url).params(params).post(new OkHttpResultCallback<List<User>>() {
+        new OkHttpRequest.Builder().url(URL_USERS).post(new OkHttpResultCallback<List<User>>(actionBar) {
             @Override
             public void onError(Request request, Exception e) {
-                Log.e("TAG", "onError , e = " + e.getMessage());
+                tv_response.setText(e.getMessage());
             }
 
             @Override
             public void onResponse(Response response, List<User> data) {
-                Log.e("TAG", "onResponse , users = " + data);
-                tv_response.setText(data.get(0).toString());
+                tv_response.setText(data.toString());
+                tv_header.setText(Utils.getResponse(response));
             }
         });
     }
 
     public void getSimpleString(View view) {
-        String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/user.gson";
-        new OkHttpRequest.Builder().url(url)
-                .get(new OkHttpResultCallback<String>() {
+        new OkHttpRequest.Builder().url(URL_USER)
+                .get(new OkHttpResultCallback<String>(actionBar) {
                     @Override
                     public void onError(Request request, Exception e) {
-                        Log.e("TAG", "onError , e = " + e.getMessage());
+                        tv_response.setText(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(Response response, String data) {
-                        tv_response.setText(data);
+                        tv_response.setText(data.toString());
+                        tv_header.setText(Utils.getResponse(response));
                     }
                 });
     }
 
     public void getHtml(View view) {
-        String url = "http://www.csdn.net/";
-        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<String>() {
+        new OkHttpRequest.Builder().url(URL_BAIDU).get(new OkHttpResultCallback<String>(actionBar) {
             @Override
             public void onError(Request request, Exception e) {
-                Log.e("TAG", "onError" + e.getMessage());
+                tv_response.setText(e.getMessage());
             }
 
             @Override
             public void onResponse(Response response, String data) {
-                tv_response.setText(data);
+                tv_response.setText(data.toString());
+                tv_header.setText(Utils.getResponse(response));
             }
         });
     }
 
     public void getHttpsHtml(View view) {
-        String url = "https://kyfw.12306.cn/otn/";
-        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<String>() {
+        new OkHttpRequest.Builder().url(URL_12306).get(new OkHttpResultCallback<String>(actionBar) {
             @Override
             public void onError(Request request, Exception e) {
-                Log.e("TAG", "onError" + e.getMessage());
+                tv_response.setText(e.getMessage());
             }
 
             @Override
             public void onResponse(Response response, String data) {
-                tv_response.setText(data);
+                tv_response.setText(data.toString());
+                tv_header.setText(Utils.getResponse(response));
             }
         });
     }
@@ -121,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Map<String, String> params = new HashMap<>();
-        params.put("username", "张鸿洋");
+        params.put("username", "name");
         params.put("password", "123");
 
         Map<String, String> headers = new HashMap<>();
@@ -133,8 +151,19 @@ public class MainActivity extends AppCompatActivity {
                 .url(url)
                 .params(params)
                 .headers(headers)
-                .files(new Pair<>("mFile", file))//
-                .upload(stringResultCallback);
+                .files(new Pair<>("mFile", file))
+                .upload(new OkHttpResultCallback(actionBar) {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        tv_response.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Response response, Object data) {
+                        tv_response.setText(data.toString());
+                        tv_header.setText(Utils.getResponse(response));
+                    }
+                });
     }
 
 
@@ -146,15 +175,26 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Map<String, String> params = new HashMap<>();
-        params.put("username", "张鸿洋");
+        params.put("username", "name");
         params.put("password", "123");
 
         String url = "http://192.168.1.103:8080/okHttpServer/mulFileUpload";
-        new OkHttpRequest.Builder()//
-                .url(url)//
+        new OkHttpRequest.Builder()
+                .url(url)
                 .params(params)
-                .files(new Pair<>("mFile", file), new Pair<>("mFile", file2))
-                .upload(stringResultCallback);
+                .files(new Pair<>("File1", file), new Pair<>("File2", file2))
+                .upload(new OkHttpResultCallback(actionBar) {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        tv_response.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Response response, Object data) {
+                        tv_response.setText(data.toString());
+                        tv_header.setText(Utils.getResponse(response));
+                    }
+                });
     }
 
 
@@ -164,38 +204,18 @@ public class MainActivity extends AppCompatActivity {
                 .url(url)
                 .destFileDir(Environment.getExternalStorageDirectory().getAbsolutePath())
                 .destFileName("gson-2.2.1.jar")
-                .download(stringResultCallback);
+                .download(new OkHttpResultCallback(actionBar) {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        tv_response.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Response response, Object data) {
+                        tv_response.setText(data.toString());
+                        tv_header.setText(Utils.getResponse(response));
+                    }
+                });
     }
 
-    public abstract class OkHttpResultCallback<T> extends OkHttpCallback<T> {
-
-        @Override
-        public void onBefore(Request request) {
-            super.onBefore(request);
-            setTitle("loading...");
-        }
-
-        @Override
-        public void onAfter() {
-            super.onAfter();
-            setTitle("OkHttpPlus");
-        }
-    }
-
-    private OkHttpCallback<String> stringResultCallback = new OkHttpResultCallback<String>() {
-        @Override
-        public void onError(Request request, Exception e) {
-            Log.e("TAG", "onError , e = " + e.getMessage());
-        }
-
-        @Override
-        public void onResponse(Response response, String data) {
-            Log.e("TAG", "onResponse , response = " + data);
-            tv_response.setText("operate success");
-        }
-
-        @Override
-        public void inProgress(float progress) {
-        }
-    };
 }

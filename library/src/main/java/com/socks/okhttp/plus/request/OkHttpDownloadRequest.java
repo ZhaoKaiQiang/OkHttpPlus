@@ -29,7 +29,6 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
         this.destFileDir = destFileDir;
     }
 
-
     @Override
     public void invokeAsync(final OkHttpCallback callback) {
         prepareInvoked(callback);
@@ -77,9 +76,6 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
             final long total = response.body().contentLength();
             long sum = 0;
 
-//            L.e(total + "");
-
-
             File dir = new File(destFileDir);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -102,9 +98,7 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
                 }
             }
             fos.flush();
-
             return file.getAbsolutePath();
-
         } finally {
             try {
                 if (is != null) is.close();
@@ -114,9 +108,7 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
                 if (fos != null) fos.close();
             } catch (IOException e) {
             }
-
         }
     }
-
 
 }

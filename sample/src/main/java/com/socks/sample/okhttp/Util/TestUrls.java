@@ -1,17 +1,15 @@
-package com.socks.sample.okhttp;
+package com.socks.sample.okhttp.util;
 
-import android.app.Application;
+/**
+ * Created by zhaokaiqiang on 15/11/16.
+ */
+public interface TestUrls {
 
-import com.socks.okhttp.plus.OkHttpClientManager;
-
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-
-import okio.Buffer;
-
-public class MyApplication extends Application {
-
-    private String CER_12306 = "-----BEGIN CERTIFICATE-----\n" +
+    String URL_USER = "https://raw.githubusercontent.com/ZhaoKaiQiang/OkHttpPlus/master/server/user";
+    String URL_USERS = "https://raw.githubusercontent.com/ZhaoKaiQiang/OkHttpPlus/master/server/users";
+    String URL_BAIDU = "http://www.baidu.com";
+    String URL_12306 = "https://kyfw.12306.cn/otn/";
+    String CER_12306 = "-----BEGIN CERTIFICATE-----\n" +
             "MIICmjCCAgOgAwIBAgIIbyZr5/jKH6QwDQYJKoZIhvcNAQEFBQAwRzELMAkGA1UEBhMCQ04xKTAn\n" +
             "BgNVBAoTIFNpbm9yYWlsIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MQ0wCwYDVQQDEwRTUkNBMB4X\n" +
             "DTA5MDUyNTA2NTYwMFoXDTI5MDUyMDA2NTYwMFowRzELMAkGA1UEBhMCQ04xKTAnBgNVBAoTIFNp\n" +
@@ -26,11 +24,4 @@ public class MyApplication extends Application {
             "og555S+C3eJAAVeNCTeMS3N/M5hzBRJAoffn3qoYdAO1Q8bTguOi+2849A==\n" +
             "-----END CERTIFICATE-----";
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        OkHttpClientManager.getInstance().setCertificates(new InputStream[]{
-                new Buffer().writeUtf8(CER_12306).inputStream()});
-        OkHttpClientManager.getInstance().getOkHttpClient().setConnectTimeout(10 * 1000, TimeUnit.MILLISECONDS);
-    }
 }
