@@ -7,15 +7,11 @@ import com.squareup.okhttp.Response;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * @author zhaokaiqiang
- *         15/11/16 修改
- */
-public abstract class ResultCallback<T> {
+public abstract class OkHttpCallback<T> {
 
     public Type mType;
 
-    public ResultCallback() {
+    public OkHttpCallback() {
         mType = getSuperclassTypeParameter(getClass());
     }
 

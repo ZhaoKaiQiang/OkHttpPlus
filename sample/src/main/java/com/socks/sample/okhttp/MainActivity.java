@@ -6,12 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.socks.library.KLog;
-import com.socks.okhttp.plus.callback.ResultCallback;
+import com.socks.okhttp.plus.callback.OkHttpCallback;
 import com.socks.okhttp.plus.request.OkHttpRequest;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -23,21 +22,20 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTv;
-    private ProgressBar mProgressBar;
+    private TextView tv_response;
+    private TextView tv_header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mTv = (TextView) findViewById(R.id.id_textview);
-        mProgressBar = (ProgressBar) findViewById(R.id.id_progress);
+        tv_response = (TextView) findViewById(R.id.tv_response);
+        tv_header = (TextView) findViewById(R.id.tv_header);
     }
 
     public void getUser(View view) {
         String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/user.gson";
-        new OkHttpRequest.Builder().url(url).get(new MyResultCallback<User>() {
+        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<User>() {
             @Override
             public void onError(Request request, Exception e) {
                 KLog.e(e.getMessage());
@@ -45,18 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Response response, User data) {
-                mTv.setText(data.username);
+                tv_response.setText(data.toString());
                 KLog.d("code = " + response.code());
             }
         });
     }
 
-
     public void getUsers(View view) {
         Map<String, String> params = new HashMap<>();
         params.put("name", "zhy");
         String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/users.gson";
-        new OkHttpRequest.Builder().url(url).params(params).post(new MyResultCallback<List<User>>() {
+        new OkHttpRequest.Builder().url(url).params(params).post(new OkHttpResultCallback<List<User>>() {
             @Override
             public void onError(Request request, Exception e) {
                 Log.e("TAG", "onError , e = " + e.getMessage());
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response response, List<User> data) {
                 Log.e("TAG", "onResponse , users = " + data);
-                mTv.setText(data.get(0).toString());
+                tv_response.setText(data.get(0).toString());
             }
         });
     }
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     public void getSimpleString(View view) {
         String url = "https://raw.githubusercontent.com/hongyangAndroid/okhttp-utils/master/user.gson";
         new OkHttpRequest.Builder().url(url)
-                .get(new MyResultCallback<String>() {
+                .get(new OkHttpResultCallback<String>() {
                     @Override
                     public void onError(Request request, Exception e) {
                         Log.e("TAG", "onError , e = " + e.getMessage());
@@ -81,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(Response response, String data) {
-                        mTv.setText(data);
+                        tv_response.setText(data);
                     }
                 });
     }
 
     public void getHtml(View view) {
         String url = "http://www.csdn.net/";
-        new OkHttpRequest.Builder().url(url).get(new MyResultCallback<String>() {
+        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
                 Log.e("TAG", "onError" + e.getMessage());
@@ -96,14 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Response response, String data) {
-                mTv.setText(data);
+                tv_response.setText(data);
             }
         });
     }
 
     public void getHttpsHtml(View view) {
         String url = "https://kyfw.12306.cn/otn/";
-        new OkHttpRequest.Builder().url(url).get(new MyResultCallback<String>() {
+        new OkHttpRequest.Builder().url(url).get(new OkHttpResultCallback<String>() {
             @Override
             public void onError(Request request, Exception e) {
                 Log.e("TAG", "onError" + e.getMessage());
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Response response, String data) {
-                mTv.setText(data);
+                tv_response.setText(data);
             }
         });
     }
@@ -170,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 .download(stringResultCallback);
     }
 
-    public abstract class MyResultCallback<T> extends ResultCallback<T> {
+    public abstract class OkHttpResultCallback<T> extends OkHttpCallback<T> {
 
         @Override
         public void onBefore(Request request) {
@@ -181,11 +178,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAfter() {
             super.onAfter();
-            setTitle("Sample-okHttp");
+            setTitle("OkHttpPlus");
         }
     }
 
-    private ResultCallback<String> stringResultCallback = new MyResultCallback<String>() {
+    private OkHttpCallback<String> stringResultCallback = new OkHttpResultCallback<String>() {
         @Override
         public void onError(Request request, Exception e) {
             Log.e("TAG", "onError , e = " + e.getMessage());
@@ -194,12 +191,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResponse(Response response, String data) {
             Log.e("TAG", "onResponse , response = " + data);
-            mTv.setText("operate success");
+            tv_response.setText("operate success");
         }
 
         @Override
         public void inProgress(float progress) {
-            mProgressBar.setProgress((int) (100 * progress));
         }
     };
 }

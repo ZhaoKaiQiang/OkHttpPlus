@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.socks.okhttp.plus.OkHttpClientManager;
-import com.socks.okhttp.plus.callback.ResultCallback;
+import com.socks.okhttp.plus.callback.OkHttpCallback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -46,19 +46,19 @@ public abstract class OkHttpRequest {
 
     protected abstract RequestBody buildRequestBody();
 
-    protected void prepareInvoked(ResultCallback callback) {
+    protected void prepareInvoked(OkHttpCallback callback) {
         requestBody = buildRequestBody();
         requestBody = wrapRequestBody(requestBody, callback);
         request = buildRequest();
     }
 
 
-    public void invokeAsync(ResultCallback callback) {
+    public void invokeAsync(OkHttpCallback callback) {
         prepareInvoked(callback);
         mOkHttpClientManager.execute(request, callback);
     }
 
-    protected RequestBody wrapRequestBody(RequestBody requestBody, final ResultCallback callback) {
+    protected RequestBody wrapRequestBody(RequestBody requestBody, final OkHttpCallback callback) {
         return requestBody;
     }
 
@@ -165,7 +165,7 @@ public abstract class OkHttpRequest {
             return request.invoke(clazz);
         }
 
-        public OkHttpRequest get(ResultCallback callback) {
+        public OkHttpRequest get(OkHttpCallback callback) {
             OkHttpRequest request = new OkHttpGetRequest(url, tag, params, headers);
             request.invokeAsync(callback);
             return request;
@@ -176,13 +176,13 @@ public abstract class OkHttpRequest {
             return request.invoke(clazz);
         }
 
-        public OkHttpRequest post(ResultCallback callback) {
+        public OkHttpRequest post(OkHttpCallback callback) {
             OkHttpRequest request = new OkHttpPostRequest(url, tag, params, headers, content, bytes, file);
             request.invokeAsync(callback);
             return request;
         }
 
-        public OkHttpRequest upload(ResultCallback callback) {
+        public OkHttpRequest upload(OkHttpCallback callback) {
             OkHttpRequest request = new OkHttpUploadRequest(url, tag, params, headers, files);
             request.invokeAsync(callback);
             return request;
@@ -194,7 +194,7 @@ public abstract class OkHttpRequest {
         }
 
 
-        public OkHttpRequest download(ResultCallback callback) {
+        public OkHttpRequest download(OkHttpCallback callback) {
             OkHttpRequest request = new OkHttpDownloadRequest(url, tag, params, headers, destFileName, destFileDir);
             request.invokeAsync(callback);
             return request;

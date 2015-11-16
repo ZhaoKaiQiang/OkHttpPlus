@@ -2,7 +2,7 @@ package com.socks.okhttp.plus.request;
 
 import android.text.TextUtils;
 
-import com.socks.okhttp.plus.callback.ResultCallback;
+import com.socks.okhttp.plus.callback.OkHttpCallback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
@@ -95,7 +95,7 @@ public class OkHttpPostRequest extends OkHttpRequest {
     }
 
     @Override
-    protected RequestBody wrapRequestBody(RequestBody requestBody, final ResultCallback callback) {
+    protected RequestBody wrapRequestBody(RequestBody requestBody, final OkHttpCallback callback) {
         CountingRequestBody countingRequestBody = new CountingRequestBody(requestBody, new CountingRequestBody.Listener() {
             @Override
             public void onRequestProgress(final long bytesWritten, final long contentLength) {
