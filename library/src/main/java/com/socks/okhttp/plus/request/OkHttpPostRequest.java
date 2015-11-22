@@ -1,7 +1,5 @@
 package com.socks.okhttp.plus.request;
 
-import android.text.TextUtils;
-
 import com.socks.okhttp.plus.callback.OkHttpCallback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
@@ -15,6 +13,7 @@ import java.util.Map;
  * Created by zhy on 15/11/6.
  */
 public class OkHttpPostRequest extends OkHttpRequest {
+
     private String content;
     private byte[] bytes;
     private File file;
@@ -28,7 +27,6 @@ public class OkHttpPostRequest extends OkHttpRequest {
     private final MediaType MEDIA_TYPE_STREAM = MediaType.parse("application/octet-stream;charset=utf-8");
     private final MediaType MEDIA_TYPE_STRING = MediaType.parse("text/plain;charset=utf-8");
 
-
     protected OkHttpPostRequest(String url, String tag, Map<String, String> params, Map<String, String> headers, String content, byte[] bytes, File file) {
         super(url, tag, params, headers);
         this.content = content;
@@ -37,6 +35,7 @@ public class OkHttpPostRequest extends OkHttpRequest {
     }
 
     protected void validParams() {
+
         int count = 0;
         if (params != null && !params.isEmpty()) {
             type = TYPE_PARAMS;
@@ -62,9 +61,6 @@ public class OkHttpPostRequest extends OkHttpRequest {
 
     @Override
     protected Request buildRequest() {
-        if (TextUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("url can not be empty!");
-        }
         Request.Builder builder = new Request.Builder();
         appendHeaders(builder, headers);
         builder.url(url).tag(tag).post(requestBody);
@@ -103,10 +99,9 @@ public class OkHttpPostRequest extends OkHttpRequest {
                 mOkHttpClientManager.getDelivery().post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.inProgress(bytesWritten * 1.0f / contentLength);
+                        callback.onProgress(bytesWritten * 1.0f / contentLength);
                     }
                 });
-
             }
         });
         return countingRequestBody;

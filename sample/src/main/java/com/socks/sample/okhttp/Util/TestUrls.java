@@ -9,6 +9,7 @@ public interface TestUrls {
     String URL_USERS = "https://raw.githubusercontent.com/ZhaoKaiQiang/OkHttpPlus/master/server/users";
     String URL_BAIDU = "http://www.baidu.com";
     String URL_12306 = "https://kyfw.12306.cn/otn/";
+    String URL_DOWMLOAD = "https://github.com/ZhaoKaiQiang/OkHttpPlus/blob/master/library/libs/gson-2.2.1.jar?raw=true";
     String CER_12306 = "-----BEGIN CERTIFICATE-----\n" +
             "MIICmjCCAgOgAwIBAgIIbyZr5/jKH6QwDQYJKoZIhvcNAQEFBQAwRzELMAkGA1UEBhMCQ04xKTAn\n" +
             "BgNVBAoTIFNpbm9yYWlsIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MQ0wCwYDVQQDEwRTUkNBMB4X\n" +
@@ -24,4 +25,6 @@ public interface TestUrls {
             "og555S+C3eJAAVeNCTeMS3N/M5hzBRJAoffn3qoYdAO1Q8bTguOi+2849A==\n" +
             "-----END CERTIFICATE-----";
 
+    String TOKEN = "IUy4JnOZHP6o-rx9QsGLf9jMTAKfRkL07gNssIDA:JIXarBV32ndUJTNuecGKcZD-YiE=:eyJzY29wZSI6InpoYW9rYWlxaWFuZyIsImRlYWRsaW5lIjoxNDQ4MjAzMjU1fQ==";
+    String URL_UPLOAD = "http://upload.qiniu.com/";
 }

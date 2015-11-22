@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-/**
- * Created by zhy on 15/11/6.
- */
 public class OkHttpDownloadRequest extends OkHttpGetRequest {
+
     private String destFileDir;
     private String destFileName;
 
@@ -54,11 +52,6 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
 
     }
 
-    private String getFileName(String path) {
-        int separatorIndex = path.lastIndexOf("/");
-        return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());
-    }
-
     @Override
     public <T> T invoke(Class<T> clazz) throws IOException {
         final Call call = mOkHttpClient.newCall(request);
@@ -85,14 +78,12 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
             while ((len = is.read(buf)) != -1) {
                 sum += len;
                 fos.write(buf, 0, len);
-
                 if (callback != null) {
                     final long finalSum = sum;
                     mOkHttpClientManager.getDelivery().post(new Runnable() {
                         @Override
                         public void run() {
-
-                            callback.inProgress(finalSum * 1.0f / total);
+                            callback.onProgress(finalSum * 1.0f / total);
                         }
                     });
                 }

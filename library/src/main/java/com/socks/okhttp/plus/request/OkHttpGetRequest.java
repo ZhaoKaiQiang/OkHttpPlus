@@ -5,9 +5,6 @@ import com.squareup.okhttp.RequestBody;
 
 import java.util.Map;
 
-/**
- * Created by zhy on 15/11/6.
- */
 public class OkHttpGetRequest extends OkHttpRequest {
 
     protected OkHttpGetRequest(String url, String tag, Map<String, String> params, Map<String, String> headers) {

@@ -46,20 +46,9 @@ public abstract class OkHttpRequest {
 
     protected abstract RequestBody buildRequestBody();
 
-    protected void prepareInvoked(OkHttpCallback callback) {
-        requestBody = buildRequestBody();
-        requestBody = wrapRequestBody(requestBody, callback);
-        request = buildRequest();
-    }
-
-
     public void invokeAsync(OkHttpCallback callback) {
         prepareInvoked(callback);
         mOkHttpClientManager.execute(request, callback);
-    }
-
-    protected RequestBody wrapRequestBody(RequestBody requestBody, final OkHttpCallback callback) {
-        return requestBody;
     }
 
     public <T> T invoke(Class<T> clazz) throws IOException {
@@ -68,14 +57,26 @@ public abstract class OkHttpRequest {
         return mOkHttpClientManager.execute(request, clazz);
     }
 
+    protected void prepareInvoked(OkHttpCallback callback) {
+        requestBody = buildRequestBody();
+        requestBody = wrapRequestBody(requestBody, callback);
+        request = buildRequest();
+    }
+
+    protected RequestBody wrapRequestBody(RequestBody requestBody, final OkHttpCallback callback) {
+        return requestBody;
+    }
+
+
     protected void appendHeaders(Request.Builder builder, Map<String, String> headers) {
+
         if (builder == null) {
             throw new IllegalArgumentException("builder can not be empty!");
         }
-
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
         Headers.Builder headerBuilder = new Headers.Builder();
-        if (headers == null || headers.isEmpty()) return;
-
         for (String key : headers.keySet()) {
             headerBuilder.add(key, headers.get(key));
         }

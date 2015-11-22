@@ -21,7 +21,7 @@ public abstract class OkHttpCallback<T> {
     public void onAfter() {
     }
 
-    public void inProgress(float progress) {
+    public void onProgress(float progress) {
     }
 
     public abstract void onError(Request request, Exception e);
