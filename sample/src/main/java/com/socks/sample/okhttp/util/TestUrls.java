@@ -1,4 +1,4 @@
-package com.socks.sample.okhttp;
+package com.socks.sample.okhttp.util;
 
 /**
  * Created by zhaokaiqiang on 15/11/16.

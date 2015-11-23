@@ -1,6 +1,8 @@
 package com.socks.okhttp.plus;
 
 import com.socks.okhttp.plus.callback.OkCallback;
+import com.socks.okhttp.plus.listener.OkDownloadListener;
+import com.socks.okhttp.plus.util.ProgressHelper;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -89,6 +91,13 @@ public class OkHttpProxy {
         Request request = builder.build();
         Call call = getInstance().newCall(request);
         call.enqueue(responseCallback);
+        return call;
+    }
+
+    public static Call download(String url, OkDownloadListener downloadListener) {
+        Request request = new Request.Builder().url(url).build();
+        Call call = ProgressHelper.addProgressResponseListener(getInstance(), downloadListener).newCall(request);
+        call.enqueue(downloadListener);
         return call;
     }
 

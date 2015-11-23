@@ -1,7 +1,6 @@
 package com.socks.okhttp.plus.callback;
 
 import android.os.Handler;
-import android.os.Looper;
 
 import com.socks.okhttp.plus.parser.OkBaseParser;
 import com.squareup.okhttp.Callback;
@@ -15,7 +14,7 @@ import java.io.IOException;
  */
 public abstract class OkCallback<T> implements Callback {
 
-    private static Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler;
 
     private OkBaseParser<T> mParser;
 
@@ -24,6 +23,7 @@ public abstract class OkCallback<T> implements Callback {
             throw new IllegalArgumentException("Parser can't be null");
         }
         this.mParser = mParser;
+        mHandler = HandlerFactory.getInstance();
     }
 
     @Override

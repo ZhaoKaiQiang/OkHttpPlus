@@ -1,6 +1,7 @@
 package com.socks.sample.okhttp;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -8,12 +9,15 @@ import android.widget.TextView;
 import com.socks.library.KLog;
 import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.callback.OkCallback;
+import com.socks.okhttp.plus.listener.OkDownloadListener;
 import com.socks.okhttp.plus.parser.OkJsonParser;
 import com.socks.okhttp.plus.parser.OkTextParser;
 import com.socks.sample.okhttp.model.Joke;
 import com.socks.sample.okhttp.model.User;
 import com.socks.sample.okhttp.parser.JokeParser;
+import com.socks.sample.okhttp.util.TestUrls;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TestUrls {
@@ -43,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
             @Override
             public void onFailure(Throwable e) {
                 tv_response.setText(e.getMessage());
-                KLog.e(e);
             }
         });
     }
@@ -101,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
             @Override
             public void onFailure(Throwable e) {
                 tv_response.setText(e.getMessage());
-                KLog.e(e);
             }
         });
     }
@@ -145,31 +147,23 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     }
 
     public void downloadFile(View view) {
+        OkHttpProxy.download(URL_USER, new OkDownloadListener(Environment.getExternalStorageDirectory().getAbsolutePath(), "json.text") {
 
-//        new OkHttpRequest.Builder()
-//                .url(URL_DOWMLOAD)
-//                .destFileDir(Environment.getExternalStorageDirectory().getAbsolutePath())
-//                .destFileName("gson-2.2.1.jar")
-//                .download(new OkHttpResultCallback<String>(actionBar) {
-//                    @Override
-//                    public void onError(Request request, Exception e) {
-//                        tv_response.setText(e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onResponse(Response response, String data) {
-//                        tv_response.setText(data.toString());
-//                        tv_header.setText("code = " + response.code());
-//                    }
-//
-//                    @Override
-//                    public void onProgress(float progress) {
-//                        pb.setProgress((int) (progress * 100));
-//                        if (progress == 1) {
-//                            pb.setProgress(0);
-//                        }
-//                    }
-//                });
+            @Override
+            public void onSuccess(File file) {
+                tv_response.setText(file.getAbsolutePath());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                tv_response.setText(e.getMessage());
+            }
+
+            @Override
+            public void onProgress(long currentBytes, long contentLength, boolean done) {
+                KLog.d("currentBytes = " + currentBytes + " contentLength = " + contentLength);
+            }
+        });
     }
 
 }
