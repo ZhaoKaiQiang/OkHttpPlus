@@ -21,6 +21,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.github.zhaokaiqiang.klog:library:1.1.0'
     compile 'com.qiniu:qiniu-android-sdk:7.0.+'
     compile project(':library')
 }

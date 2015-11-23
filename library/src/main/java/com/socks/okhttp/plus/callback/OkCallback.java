@@ -1,42 +1,76 @@
 package com.socks.okhttp.plus.callback;
 
-import com.google.gson.internal.$Gson$Types;
-import com.socks.library.KLog;
+import android.os.Handler;
+import android.os.Looper;
+
+import com.socks.okhttp.plus.parser.OkBaseParser;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.io.IOException;
 
-public abstract class OkCallback<T> {
+/**
+ * Created by zhaokaiqiang on 15/11/22.
+ */
+public abstract class OkCallback<T> implements Callback {
 
-    public Type mType;
+    private static Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public OkCallback() {
-        mType = getSuperclassTypeParameter(getClass());
-        KLog.d("library = "+mType.getClass().getSimpleName());
-    }
+    private OkBaseParser<T> mParser;
 
-    public void onBefore(Request request) {
-    }
-
-    public void onAfter() {
-    }
-
-    public void onProgress(float progress) {
-    }
-
-    public abstract void onError(Request request, Exception e);
-
-    public abstract void onResponse(Response response, T data);
-
-    private static Type getSuperclassTypeParameter(Class<?> subclass) {
-        Type superclass = subclass.getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new RuntimeException("Missing type parameter.");
+    public OkCallback(OkBaseParser<T> mParser) {
+        if (mParser == null) {
+            throw new IllegalArgumentException("Parser can't be null");
         }
-        ParameterizedType parameter = (ParameterizedType) superclass;
-        return $Gson$Types.canonicalize(parameter.getActualTypeArguments()[0]);
+        this.mParser = mParser;
+    }
+
+    @Override
+    public void onFailure(Request request, final IOException e) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                onFailure(e);
+            }
+        });
+    }
+
+    @Override
+    public void onResponse(final Response response) {
+        final int code = mParser.getCode();
+        try {
+            final T t = mParser.parseResponse(response);
+            if (response.isSuccessful() && t != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSuccess(code, t);
+                    }
+                });
+            } else {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onFailure(new Exception(Integer.toString(code)));
+                    }
+                });
+            }
+        } catch (final Exception e) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onFailure(e);
+                }
+            });
+        }
+    }
+
+    public abstract void onSuccess(int code, T t);
+
+    public abstract void onFailure(Throwable e);
+
+    public void onStart() {
     }
 
 }

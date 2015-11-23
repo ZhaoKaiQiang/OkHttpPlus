@@ -29,12 +29,11 @@
                 android:layout_height="wrap_content"
                 android:onClick="getUsers"
                 android:text="Get Users" />
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="getSimpleString"
-                android:text="Get SimpleString" />
+                android:onClick="getJokes"
+                android:text="Get Jokes" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -53,12 +52,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="uploadFile"
                 android:text="Upload File" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="multiFileUpload"
-                android:text="Multi Upload Files" />
 
             <Button
                 android:layout_width="wrap_content"

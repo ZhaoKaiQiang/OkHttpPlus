@@ -1,6 +1,8 @@
-package com.socks.sample.okhttp.plus;
+package com.socks.okhttp.plus;
 
+import com.socks.okhttp.plus.callback.OkCallback;
 import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -37,27 +39,32 @@ public class OkHttpProxy {
         return mHttpClient;
     }
 
-    public static Call get(String url, OkHttpCallback responseCallback) {
+    public static Call get(String url, Callback responseCallback) {
         return get(url, null, responseCallback);
     }
 
-    public static Call get(String url, Object tag, OkHttpCallback responseCallback) {
+    public static Call get(String url, Object tag, Callback responseCallback) {
         Request.Builder builder = new Request.Builder().url(url);
         if (tag != null) {
             builder.tag(tag);
         }
         Request request = builder.build();
+
+        if (responseCallback instanceof OkCallback) {
+            ((OkCallback) responseCallback).onStart();
+        }
+
         Call call = getInstance().newCall(request);
         call.enqueue(responseCallback);
         return call;
     }
 
 
-    public static Call post(String url, Map<String, String> params, OkHttpCallback responseCallback) {
+    public static Call post(String url, Map<String, String> params, Callback responseCallback) {
         return post(url, params, null, responseCallback);
     }
 
-    public static Call post(String url, Map<String, String> params, Object tag, OkHttpCallback responseCallback) {
+    public static Call post(String url, Map<String, String> params, Object tag, Callback responseCallback) {
 
         Request.Builder builder = new Request.Builder().url(url);
         if (tag != null) {
@@ -74,6 +81,10 @@ public class OkHttpProxy {
 
         RequestBody formBody = encodingBuilder.build();
         builder.post(formBody);
+
+        if (responseCallback instanceof OkCallback) {
+            ((OkCallback) responseCallback).onStart();
+        }
 
         Request request = builder.build();
         Call call = getInstance().newCall(request);
