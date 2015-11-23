@@ -15,6 +15,9 @@ import com.socks.okhttp.plus.OkHttpClientManager;
 import com.socks.okhttp.plus.request.OkHttpRequest;
 import com.socks.sample.okhttp.callback.OkHttpResultCallback;
 import com.socks.sample.okhttp.model.User;
+import com.socks.sample.okhttp.plus.OkHttpCallback;
+import com.socks.sample.okhttp.plus.OkHttpJsonParser;
+import com.socks.sample.okhttp.plus.OkHttpProxy;
 import com.socks.sample.okhttp.util.TestUrls;
 import com.socks.sample.okhttp.util.Utils;
 import com.squareup.okhttp.OkHttpClient;
@@ -62,16 +65,15 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     ///////////////////////////////////////////////////////////////////////////
 
     public void getUser(View view) {
-        new OkHttpRequest.Builder().url(URL_USER).get(new OkHttpResultCallback<User>(actionBar) {
+        OkHttpProxy.get(URL_USER, new OkHttpCallback<User>(new OkHttpJsonParser<User>()) {
             @Override
-            public void onError(Request request, Exception e) {
-                tv_response.setText(e.getMessage());
+            public void onSuccess(int code, User user) {
+                tv_response.setText(user.toString());
             }
 
             @Override
-            public void onResponse(Response response, User data) {
-                tv_response.setText(data.toString());
-                tv_header.setText(Utils.getResponse(response));
+            public void onFailure(int code, Throwable e) {
+                tv_response.setText(e.getMessage());
             }
         });
     }

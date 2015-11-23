@@ -1,7 +1,7 @@
 package com.socks.okhttp.plus.request;
 
 import com.socks.okhttp.plus.OkHttpClientManager;
-import com.socks.okhttp.plus.callback.OkHttpCallback;
+import com.socks.okhttp.plus.callback.OkCallback;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -28,7 +28,7 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
     }
 
     @Override
-    public void invokeAsync(final OkHttpCallback callback) {
+    public void invokeAsync(final OkCallback callback) {
         prepareInvoked(callback);
 
         final Call call = mOkHttpClient.newCall(request);
@@ -59,7 +59,7 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest {
         return (T) saveFile(response, null);
     }
 
-    public String saveFile(Response response, final OkHttpCallback callback) throws IOException {
+    public String saveFile(Response response, final OkCallback callback) throws IOException {
         InputStream is = null;
         byte[] buf = new byte[2048];
         int len = 0;

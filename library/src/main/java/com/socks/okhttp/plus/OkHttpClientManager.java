@@ -6,7 +6,7 @@ import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.socks.okhttp.plus.callback.OkHttpCallback;
+import com.socks.okhttp.plus.callback.OkCallback;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -80,12 +80,12 @@ public class OkHttpClientManager {
     }
 
 
-    public void execute(final Request request, OkHttpCallback callback) {
+    public void execute(final Request request, OkCallback callback) {
         if (callback == null) {
             throw new IllegalArgumentException("ResultCallback can't be null !");
         }
 
-        final OkHttpCallback resCallBack = callback;
+        final OkCallback resCallBack = callback;
         resCallBack.onBefore(request);
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -129,7 +129,7 @@ public class OkHttpClientManager {
     }
 
 
-    public void sendFailResultCallback(final Request request, final Exception e, final OkHttpCallback callback) {
+    public void sendFailResultCallback(final Request request, final Exception e, final OkCallback callback) {
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
@@ -139,7 +139,7 @@ public class OkHttpClientManager {
         });
     }
 
-    public void sendSuccessResultCallback(final Response response,final Object object, final OkHttpCallback callback) {
+    public void sendSuccessResultCallback(final Response response,final Object object, final OkCallback callback) {
         mDelivery.post(new Runnable() {
             @Override
             public void run() {

@@ -1,18 +1,20 @@
 package com.socks.okhttp.plus.callback;
 
 import com.google.gson.internal.$Gson$Types;
+import com.socks.library.KLog;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class OkHttpCallback<T> {
+public abstract class OkCallback<T> {
 
     public Type mType;
 
-    public OkHttpCallback() {
+    public OkCallback() {
         mType = getSuperclassTypeParameter(getClass());
+        KLog.d("library = "+mType.getClass().getSimpleName());
     }
 
     public void onBefore(Request request) {

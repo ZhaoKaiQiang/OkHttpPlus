@@ -2,13 +2,13 @@ package com.socks.sample.okhttp.callback;
 
 import android.support.v7.app.ActionBar;
 
-import com.socks.okhttp.plus.callback.OkHttpCallback;
+import com.socks.okhttp.plus.callback.OkCallback;
 import com.squareup.okhttp.Request;
 
 /**
  * Created by zhaokaiqiang on 15/11/16.
  */
-public abstract class OkHttpResultCallback<T> extends OkHttpCallback<T> {
+public abstract class OkHttpResultCallback<T> extends OkCallback<T> {
 
     private ActionBar toolbar;
 
