@@ -1,15 +1,24 @@
 package com.socks.okhttp.plus;
 
+import android.util.Pair;
+
+import com.socks.okhttp.plus.body.BodyWrapper;
 import com.socks.okhttp.plus.callback.OkCallback;
-import com.socks.okhttp.plus.listener.OkDownloadListener;
-import com.socks.okhttp.plus.util.ProgressHelper;
+import com.socks.okhttp.plus.listener.DownloadListener;
+import com.socks.okhttp.plus.listener.UploadListener;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 
+import java.io.File;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -94,15 +103,78 @@ public class OkHttpProxy {
         return call;
     }
 
-    public static Call download(String url, OkDownloadListener downloadListener) {
+    public static Call download(String url, DownloadListener downloadListener) {
         Request request = new Request.Builder().url(url).build();
-        Call call = ProgressHelper.addProgressResponseListener(getInstance(), downloadListener).newCall(request);
+        Call call = BodyWrapper.addProgressResponseListener(getInstance(), downloadListener).newCall(request);
         call.enqueue(downloadListener);
+        return call;
+    }
+
+    /**
+     * 上传文件，默认超时时间为30min
+     *
+     * @param url
+     * @param file
+     * @param params
+     * @param uploadListener
+     * @return
+     */
+    public static Call upload(String url, Pair<String, File> file, Map<String, String> params, UploadListener uploadListener) {
+
+        MultipartBuilder builder = new MultipartBuilder().type(MultipartBuilder.FORM);
+        addParams(builder, params);
+        addFiles(builder, file);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(BodyWrapper.addProgressRequestListener(builder.build(), uploadListener))
+                .build();
+
+        OkHttpClient clone = getInstance().clone();
+        clone.setWriteTimeout(30, TimeUnit.MINUTES);
+        clone.setConnectTimeout(30, TimeUnit.MINUTES);
+        clone.setReadTimeout(30, TimeUnit.MINUTES);
+        Call call = clone.newCall(request);
+        call.enqueue(uploadListener);
         return call;
     }
 
     public static void cancel(Object tag) {
         getInstance().cancel(tag);
+    }
+
+    private static void addParams(MultipartBuilder builder, Map<String, String> params) {
+        if (params != null && !params.isEmpty()) {
+            for (String key : params.keySet()) {
+                builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + key + "\""),
+                        RequestBody.create(null, params.get(key)));
+            }
+        }
+    }
+
+    private static void addFiles(MultipartBuilder builder, Pair<String, File>... files) {
+        if (files != null) {
+            RequestBody fileBody;
+            for (int i = 0; i < files.length; i++) {
+                Pair<String, File> filePair = files[i];
+                String fileKeyName = filePair.first;
+                File file = filePair.second;
+                String fileName = file.getName();
+                fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
+                builder.addPart(Headers.of("Content-Disposition",
+                                "form-data; name=\"" + fileKeyName + "\"; filename=\"" + fileName + "\""),
+                        fileBody);
+            }
+        }
+    }
+
+    private static String guessMimeType(String path) {
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String contentTypeFor = fileNameMap.getContentTypeFor(path);
+        if (contentTypeFor == null) {
+            contentTypeFor = "application/octet-stream";
+        }
+        return contentTypeFor;
     }
 
 }

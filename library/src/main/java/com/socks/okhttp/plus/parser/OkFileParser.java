@@ -1,6 +1,5 @@
 package com.socks.okhttp.plus.parser;
 
-import com.socks.library.KLog;
 import com.squareup.okhttp.Response;
 
 import java.io.File;
@@ -34,9 +33,6 @@ public class OkFileParser extends OkBaseParser<File> {
         FileOutputStream fos = null;
         try {
             is = response.body().byteStream();
-            final long total = response.body().contentLength();
-            long sum = 0;
-            KLog.e(total + "");
             File dir = new File(mDestFileDir);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -44,9 +40,7 @@ public class OkFileParser extends OkBaseParser<File> {
             File file = new File(dir, mDestFileName);
             fos = new FileOutputStream(file);
             while ((len = is.read(buf)) != -1) {
-                sum += len;
                 fos.write(buf, 0, len);
-                KLog.d("sum = " + sum);
             }
             fos.flush();
             return file;

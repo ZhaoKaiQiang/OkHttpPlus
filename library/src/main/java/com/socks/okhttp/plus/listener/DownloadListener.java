@@ -2,6 +2,9 @@ package com.socks.okhttp.plus.listener;
 
 import android.os.Handler;
 
+import com.socks.okhttp.plus.callback.ProgressHandler;
+import com.socks.okhttp.plus.callback.UIHandler;
+import com.socks.okhttp.plus.model.Progress;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -11,18 +14,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by zhaokaiqiang on 15/11/23.
- */
-public abstract class OkDownloadListener implements ProgressListener, Callback {
+public abstract class DownloadListener implements ProgressListener, Callback, UIProgressListener {
 
+    private final Handler mHandler = new UIHandler(this);
+    private boolean isFirst = true;
     private String mDestFileDir;
     private String mDestFileName;
-    private Handler mHandler;
 
-    public OkDownloadListener(String destFileDir, String destFileName) {
-        mDestFileDir = destFileDir;
-        mDestFileName = destFileName;
+    public DownloadListener(String mDestFileDir, String mDestFileName) {
+        this.mDestFileDir = mDestFileDir;
+        this.mDestFileName = mDestFileName;
     }
 
     @Override
@@ -91,5 +92,35 @@ public abstract class OkDownloadListener implements ProgressListener, Callback {
             } catch (IOException e) {
             }
         }
+    }
+
+    @Override
+    public void onProgress(Progress progress) {
+
+        if (!isFirst) {
+            isFirst = true;
+            mHandler.obtainMessage(ProgressHandler.START, progress)
+                    .sendToTarget();
+        }
+
+        mHandler.obtainMessage(ProgressHandler.UPDATE,
+                progress)
+                .sendToTarget();
+
+        if (progress.isDone()) {
+            mHandler.obtainMessage(ProgressHandler.FINISH,
+                    progress)
+                    .sendToTarget();
+        }
+    }
+
+    public abstract void onUIProgress(Progress progress);
+
+    @Override
+    public void onUIStart() {
+    }
+
+    @Override
+    public void onUIFinish() {
     }
 }
