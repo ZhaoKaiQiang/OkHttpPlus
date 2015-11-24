@@ -24,6 +24,7 @@ import com.socks.sample.okhttp.util.TestUrls;
 import com.squareup.okhttp.Response;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +118,27 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
             }
         });
     }
+
+    public void postUsers(View view) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "zhaokaiqiang");
+        params.put("blog", "http://blog.csdn.net/zhaokaiqiang1992");
+
+        OkHttpProxy.post(URL_USERS, params, new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
+        }) {
+            @Override
+            public void onSuccess(int code, ArrayList<User> users) {
+                tv_response.setText(users.toString());
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                tv_response.setText(e.getMessage());
+            }
+        });
+    }
+
 
     /**
      * 采用七牛上传接口，Token有效期为12小时，若Token无效，请在下面自行获取

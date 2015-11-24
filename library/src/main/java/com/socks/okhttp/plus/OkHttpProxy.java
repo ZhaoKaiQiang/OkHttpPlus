@@ -70,12 +70,11 @@ public class OkHttpProxy {
         return call;
     }
 
-
     public static Call post(String url, Map<String, String> params, Callback responseCallback) {
-        return post(url, params, null, responseCallback);
+        return post(url, params, responseCallback, null);
     }
 
-    public static Call post(String url, Map<String, String> params, Object tag, Callback responseCallback) {
+    public static Call post(String url, Map<String, String> params, Callback responseCallback,Object tag) {
 
         Request.Builder builder = new Request.Builder().url(url);
         if (tag != null) {
@@ -90,8 +89,7 @@ public class OkHttpProxy {
             }
         }
 
-        RequestBody formBody = encodingBuilder.build();
-        builder.post(formBody);
+        builder.post(encodingBuilder.build());
 
         if (responseCallback instanceof OkCallback) {
             ((OkCallback) responseCallback).onStart();
@@ -162,7 +160,7 @@ public class OkHttpProxy {
                 String fileName = file.getName();
                 fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
                 builder.addPart(Headers.of("Content-Disposition",
-                                "form-data; name=\"" + fileKeyName + "\"; filename=\"" + fileName + "\""),
+                        "form-data; name=\"" + fileKeyName + "\"; filename=\"" + fileName + "\""),
                         fileBody);
             }
         }
