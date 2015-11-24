@@ -6,7 +6,7 @@ OkHttpPlus is a tool for OkHttp
 
 OkHttpPlus是OkHttp的一个工具类，主要对Get和Post方法进行了简单封装，所有方法的回调都在UI线程完成，内置了String、JsonObject、JsonArray数据类型的解析器，封装了对小文件下载和文件上传功能，可以实现进度监听，使之满足常见的Http需求。
 
-该项目暂时处于测试阶段，功能比较单一，__暂时不要应用到生产环境中__，请等待之后的正式版发布。
+该项目暂时处于测试阶段，__暂时不要应用到生产环境中__，请等待之后的正式版发布。
 
 如果满足不了你的需求，请发issuse。
 
@@ -22,7 +22,7 @@ OkHttpPlus是OkHttp的一个工具类，主要对Get和Post方法进行了简单
 ##Sample Usage
 
 ###Init OkHttpClient
-First , you need init OkHttpClient at Application.onCreate() to set ConnectTimeout、ReadTimeout and  WriteTimeout.
+First , you can init the OkHttpClient as usual
 
 ```
 public class OkApplication extends Application {
@@ -30,9 +30,10 @@ public class OkApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-  	
-        OkHttpProxy.init(10, 10, 10);
-    }
+        OkHttpClient okHttpClient = OkHttpProxy.getInstance();
+        okHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(15, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(15, TimeUnit.SECONDS);    }
 }
 ```
 
@@ -41,44 +42,46 @@ public class OkApplication extends Application {
 Use OkJsonParser<User> ，you could get a User Object form json format string.
 
 ```
-public void getUser(View view) {
-        OkHttpProxy.get(URL_USER, new OkCallback<User>(new OkJsonParser<User>() {
-        }) {
-            @Override
-            public void onSuccess(int code, User user) {
-                tv_response.setText(user.toString());
-            }
+OkHttpProxy.get()
+                .url(URL_USER)
+                .tag(this)
+                .execute(new OkCallback<User>(new OkJsonParser<User>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, User user) {
+                        tv_response.setText(user.toString());
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
-    }
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
 ```
 
 Use OkJsonParser<List<User>> ，you could get a list of User Object form json format string.
 
 ```
- public void getUsers(View view) {
-        OkHttpProxy.get(URL_USERS, new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
-        }) {
-            @Override
-            public void onSuccess(int code, List<User> users) {
-                tv_response.setText(users.toString());
-            }
+  OkHttpProxy.get()
+                .url(URL_USER)
+                .tag(this)
+                .execute(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, List<User> users) {
+                        tv_response.setText(users.toString());
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
-    }
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
 ```
 
 ###Custom  Parser 
 
-By extends for OkJsonParser<T>, you could custom your parser as following 
+By extends for OkJsonParser<T>, you could custom your parser as following .
 
 ```
 public class JokeParser<T> extends OkJsonParser<T> {
@@ -97,18 +100,18 @@ public class JokeParser<T> extends OkJsonParser<T> {
         }
     }
 }
-```
-
-###GET String
-
-Get String by useing OkTextParser.
 
 ```
- public void getHtml(View view) {
-        OkHttpProxy.get(URL_BAIDU, new OkCallback<String>(new OkTextParser()) {
+
+Then you can use as above.
+
+```
+OkHttpProxy.get()
+                .url(Joke.getRequestUrl(1))
+                .tag(this).execute(new OkCallback<List<Joke>>(new JokeParser()) {
             @Override
-            public void onSuccess(int code, String s) {
-                tv_response.setText(s);
+            public void onSuccess(int code, List<Joke> jokes) {
+                tv_response.setText(jokes.toString());
             }
 
             @Override
@@ -116,13 +119,136 @@ Get String by useing OkTextParser.
                 tv_response.setText(e.getMessage());
             }
         });
+```
+
+###GET String
+
+Get String by useing OkTextParser.
+
+```
+ OkHttpProxy.get()
+                .url(URL_BAIDU)
+                .tag(this)
+                .execute(new OkCallback<String>(new OkTextParser()) {
+                    @Override
+                    public void onSuccess(int code, String s) {
+                        tv_response.setText(s);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
+```
+
+###Post
+
+Post is also very easy.
+
+```
+OkHttpProxy.post()
+                .url(URL_USERS)
+                .tag(this)
+                .addParams("name", "zhaokaiqiang")
+                .addHeader("header", "okhttp")
+                .execute(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, ArrayList<User> users) {
+                        tv_response.setText(users.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
+```
+
+###Upload
+
+```
+/**
+     *  Validity period if Token is12 hours， if the Token Invalid，please create it by follow website
+     * Token website = http://jsfiddle.net/gh/get/extjs/4.2/icattlecoder/jsfiddle/tree/master/uptoken
+     * AK = IUy4JnOZHP6o-rx9QsGLf9jMTAKfRkL07gNssIDA
+     * CK = DkfA7gPTNy1k4HWnQynra3qAZhrzp-wmSs15vub6
+     * BUCKE_NAME = zhaokaiqiang
+     */
+    public void uploadFile(View view) {
+
+        File file = new File(Environment.getExternalStorageDirectory(), "jiandan02.jpg");
+        if (!file.exists()) {
+            Toast.makeText(MainActivity.this, "File not exits！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, String> param = new HashMap<>();
+        param.put("token", TOKEN);
+        Pair<String, File> pair = new Pair("file", file);
+
+        OkHttpProxy
+                .upload()
+                .url(URL_UPLOAD)
+                .file(pair)
+                .setParams(param)
+                .setWriteTimeOut(20)
+                .start(new UploadListener() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        tv_response.setText("isSuccessful = " + response.isSuccessful() + "\n" + "code = " + response.code());
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        tv_response.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onUIProgress(Progress progress) {
+                        int pro = (int) ((progress.getCurrentBytes() + 0.0) / progress.getTotalBytes() * 100);
+                        if (pro > 0) {
+                            pb.setProgress(pro);
+                        }
+                        KLog.d("pro = " + pro + " getCurrentBytes = " + progress.getCurrentBytes() + " getTotalBytes = " + progress.getTotalBytes());
+                    }
+                });
     }
+```
+
+###Download
+
+```
+ String desFileDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        OkHttpProxy.download(URL_DOWMLOAD, new DownloadListener(desFileDir, "json.jar") {
+
+            @Override
+            public void onUIProgress(Progress progress) {
+                // if the content length is unknow, the progress.getTotalBytes() = -1
+                int pro = (int) (progress.getCurrentBytes() / progress.getTotalBytes() * 100);
+                if (pro > 0) {
+                    pb.setProgress(pro);
+                }
+                KLog.d("pro = " + pro + " getCurrentBytes = " + progress.getCurrentBytes() + " getTotalBytes = " + progress.getTotalBytes());
+            }
+
+            @Override
+            public void onSuccess(File file) {
+                tv_response.setText(file.getAbsolutePath());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                tv_response.setText(e.getMessage());
+            }
+        });
 ```
 
 ##JCenter
 
 ```
-Auditing...
+compile 'com.github.zhaokaiqiang.okhttpplus:library:0.2.0'
 ```
 
 

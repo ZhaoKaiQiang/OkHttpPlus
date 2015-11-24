@@ -14,11 +14,7 @@ import java.util.Map;
 /**
  * Created by zhaokaiqiang on 15/11/24.
  */
-public class GetRequestBuilder {
-
-    private String url;
-    private Map<String, String> params;
-    private Object tag;
+public class GetRequestBuilder extends RequestBuilder {
 
     public GetRequestBuilder url(String url) {
         this.url = url;
@@ -43,6 +39,7 @@ public class GetRequestBuilder {
         return this;
     }
 
+    @Override
     public Call execute(Callback callback) {
 
         if (TextUtils.isEmpty(url)) {
@@ -68,19 +65,6 @@ public class GetRequestBuilder {
         Call call = OkHttpProxy.getInstance().newCall(request);
         call.enqueue(callback);
         return call;
-    }
-
-    private static String appendParams(String url, Map<String, String> params) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(url + "?");
-        if (params != null && !params.isEmpty()) {
-            for (String key : params.keySet()) {
-                sb.append(key).append("=").append(params.get(key)).append("&");
-            }
-        }
-
-        sb = sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
     }
 
 }

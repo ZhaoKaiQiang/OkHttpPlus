@@ -6,19 +6,18 @@ import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.callback.OkCallback;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.Request;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
  * Created by zhaokaiqiang on 15/11/24.
  */
-public class PostRequestBuilder {
+public class PostRequestBuilder extends RequestBuilder {
 
-    private String url;
-    private Map<String, String> params;
-    private Object tag;
+    private Map<String, String> headers;
 
     public PostRequestBuilder url(String url) {
         this.url = url;
@@ -32,9 +31,22 @@ public class PostRequestBuilder {
 
     public PostRequestBuilder addParams(String key, String value) {
         if (params == null) {
-            params = new HashMap<>();
+            params = new IdentityHashMap<>();
         }
         params.put(key, value);
+        return this;
+    }
+
+    public PostRequestBuilder headers(Map<String, String> headers) {
+        this.headers = headers;
+        return this;
+    }
+
+    public PostRequestBuilder addHeader(String key, String values) {
+        if (headers == null) {
+            headers = new IdentityHashMap<>();
+        }
+        headers.put(key, values);
         return this;
     }
 
@@ -43,6 +55,8 @@ public class PostRequestBuilder {
         return this;
     }
 
+
+    @Override
     public Call execute(Callback callback) {
 
         if (TextUtils.isEmpty(url)) {
@@ -50,37 +64,20 @@ public class PostRequestBuilder {
         }
 
         Request.Builder builder = new Request.Builder().url(url);
-
         if (tag != null) {
             builder.tag(tag);
         }
-
-        if (params != null && params.size() > 0) {
-            url = appendParams(url, params);
-        }
-
+        FormEncodingBuilder encodingBuilder = new FormEncodingBuilder();
+        appendParams(encodingBuilder, params);
+        appendHeaders(builder, headers);
+        builder.post(encodingBuilder.build());
         Request request = builder.build();
 
         if (callback instanceof OkCallback) {
             ((OkCallback) callback).onStart();
         }
-
         Call call = OkHttpProxy.getInstance().newCall(request);
         call.enqueue(callback);
         return call;
     }
-
-    private static String appendParams(String url, Map<String, String> params) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(url + "?");
-        if (params != null && !params.isEmpty()) {
-            for (String key : params.keySet()) {
-                sb.append(key).append("=").append(params.get(key)).append("&");
-            }
-        }
-
-        sb = sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
-    }
-
 }

@@ -2,8 +2,8 @@ package com.socks.okhttp.plus.listener;
 
 import android.os.Handler;
 
-import com.socks.okhttp.plus.callback.ProgressHandler;
-import com.socks.okhttp.plus.callback.UIHandler;
+import com.socks.okhttp.plus.handler.ProgressHandler;
+import com.socks.okhttp.plus.handler.UIHandler;
 import com.socks.okhttp.plus.model.Progress;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -53,7 +53,7 @@ public abstract class UploadListener implements ProgressListener, Callback, UIPr
                 progress)
                 .sendToTarget();
 
-        if (progress.isDone()) {
+        if (progress.isFinish()) {
             mHandler.obtainMessage(ProgressHandler.FINISH,
                     progress)
                     .sendToTarget();

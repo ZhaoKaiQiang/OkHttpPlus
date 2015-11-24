@@ -3,9 +3,6 @@ package com.socks.okhttp.plus.handler;
 import com.socks.okhttp.plus.listener.UIProgressListener;
 import com.socks.okhttp.plus.model.Progress;
 
-/**
- * Created by zhaokaiqiang on 15/11/23.
- */
 public class UIHandler extends ProgressHandler {
 
     public UIHandler(UIProgressListener uiProgressListener) {

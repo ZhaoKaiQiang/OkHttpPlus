@@ -5,33 +5,25 @@ import java.io.Serializable;
 public class Progress implements Serializable {
 
     private long currentBytes;
-    private long contentLength;
-    private boolean done;
+    private long totalBytes;
+    private boolean isFinish;
 
-    public Progress(long currentBytes, long contentLength, boolean done) {
+    public Progress(long currentBytes, long totalBytes, boolean isFinish) {
         this.currentBytes = currentBytes;
-        this.contentLength = contentLength;
-        this.done = done;
+        this.totalBytes = totalBytes;
+        this.isFinish = isFinish;
     }
 
     public long getCurrentBytes() {
         return currentBytes;
     }
 
-    public long getContentLength() {
-        return contentLength;
+    public long getTotalBytes() {
+        return totalBytes;
     }
 
-    public boolean isDone() {
-        return done;
+    public boolean isFinish() {
+        return isFinish;
     }
 
-    @Override
-    public String toString() {
-        return "ProgressModel{" +
-                "currentBytes=" + currentBytes +
-                ", contentLength=" + contentLength +
-                ", done=" + done +
-                '}';
-    }
 }

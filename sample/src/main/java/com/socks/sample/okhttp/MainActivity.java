@@ -1,9 +1,13 @@
 package com.socks.sample.okhttp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -48,37 +52,45 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     ///////////////////////////////////////////////////////////////////////////
 
     public void getUser(View view) {
-        OkHttpProxy.get(URL_USER, new OkCallback<User>(new OkJsonParser<User>() {
-        }) {
-            @Override
-            public void onSuccess(int code, User user) {
-                tv_response.setText(user.toString());
-            }
+        OkHttpProxy.get()
+                .url(URL_USER)
+                .tag(this)
+                .execute(new OkCallback<User>(new OkJsonParser<User>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, User user) {
+                        tv_response.setText(user.toString());
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
     }
 
     public void getUsers(View view) {
-        OkHttpProxy.get(URL_USERS, new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
-        }) {
-            @Override
-            public void onSuccess(int code, List<User> users) {
-                tv_response.setText(users.toString());
-            }
+        OkHttpProxy.get()
+                .url(URL_USER)
+                .tag(this)
+                .execute(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, List<User> users) {
+                        tv_response.setText(users.toString());
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
     }
 
     public void getJokes(View view) {
-        OkHttpProxy.get(Joke.getRequestUrl(1), new OkCallback<List<Joke>>(new JokeParser()) {
+        OkHttpProxy.get()
+                .url(Joke.getRequestUrl(1))
+                .tag(this).execute(new OkCallback<List<Joke>>(new JokeParser()) {
             @Override
             public void onSuccess(int code, List<Joke> jokes) {
                 tv_response.setText(jokes.toString());
@@ -92,51 +104,59 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     }
 
     public void getHtml(View view) {
-        OkHttpProxy.get(URL_BAIDU, new OkCallback<String>(new OkTextParser()) {
-            @Override
-            public void onSuccess(int code, String s) {
-                tv_response.setText(s);
-            }
+        OkHttpProxy.get()
+                .url(URL_BAIDU)
+                .tag(this)
+                .execute(new OkCallback<String>(new OkTextParser()) {
+                    @Override
+                    public void onSuccess(int code, String s) {
+                        tv_response.setText(s);
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
     }
 
     public void getHttpsHtml(View view) {
-        OkHttpProxy.get(URL_12306, new OkCallback<String>(new OkTextParser()) {
-            @Override
-            public void onSuccess(int code, String s) {
-                tv_response.setText(s);
-            }
+        OkHttpProxy.get()
+                .url(URL_12306)
+                .tag(this)
+                .execute(new OkCallback<String>(new OkTextParser()) {
+                    @Override
+                    public void onSuccess(int code, String s) {
+                        tv_response.setText(s);
+                    }
 
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
     }
 
     public void postUsers(View view) {
 
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "zhaokaiqiang");
-        params.put("blog", "http://blog.csdn.net/zhaokaiqiang1992");
+        OkHttpProxy
+                .post()
+                .url(URL_USERS)
+                .tag(this)
+                .addParams("name", "zhaokaiqiang")
+                .addHeader("header", "okhttp")
+                .execute(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
+                }) {
+                    @Override
+                    public void onSuccess(int code, ArrayList<User> users) {
+                        tv_response.setText(users.toString());
+                    }
 
-        OkHttpProxy.post(URL_USERS, params, new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
-        }) {
-            @Override
-            public void onSuccess(int code, ArrayList<User> users) {
-                tv_response.setText(users.toString());
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                tv_response.setText(e.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable e) {
+                        tv_response.setText(e.getMessage());
+                    }
+                });
     }
 
 
@@ -160,29 +180,32 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
         param.put("token", TOKEN);
         Pair<String, File> pair = new Pair("file", file);
 
-        OkHttpProxy.upload(URL_UPLOAD, pair, param, new UploadListener() {
+        OkHttpProxy
+                .upload()
+                .url(URL_UPLOAD)
+                .file(pair)
+                .setParams(param)
+                .setWriteTimeOut(20)
+                .start(new UploadListener() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        tv_response.setText("isSuccessful = " + response.isSuccessful() + "\n" + "code = " + response.code());
+                    }
 
-            @Override
-            public void onSuccess(Response response) {
-                tv_response.setText("isSuccessful = " + response.isSuccessful() + "\n" + "code = " + response.code());
-            }
+                    @Override
+                    public void onFailure(Exception e) {
+                        tv_response.setText(e.getMessage());
+                    }
 
-            @Override
-            public void onFailure(Exception e) {
-                tv_response.setText(e.getMessage());
-            }
-
-            @Override
-            public void onUIProgress(Progress progress) {
-
-                int pro = (int) ((progress.getCurrentBytes() + 0.0) / progress.getContentLength() * 100);
-                if (pro > 0) {
-                    pb.setProgress(pro);
-                }
-                KLog.d("pro = " + pro + " getCurrentBytes = " + progress.getCurrentBytes() + " getContentLength = " + progress.getContentLength());
-            }
-        });
-
+                    @Override
+                    public void onUIProgress(Progress progress) {
+                        int pro = (int) ((progress.getCurrentBytes() + 0.0) / progress.getTotalBytes() * 100);
+                        if (pro > 0) {
+                            pb.setProgress(pro);
+                        }
+                        KLog.d("pro = " + pro + " getCurrentBytes = " + progress.getCurrentBytes() + " getTotalBytes = " + progress.getTotalBytes());
+                    }
+                });
     }
 
     public void downloadFile(View view) {
@@ -192,14 +215,12 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
 
             @Override
             public void onUIProgress(Progress progress) {
-                //当下载资源长度不可知时，progress.getContentLength()为-1，此时不能显示下载进度
-                KLog.d("getCurrentBytes = " + progress.getCurrentBytes() + " getContentLength = " + progress.getContentLength());
-
-                int pro = (int) (progress.getCurrentBytes() / progress.getContentLength() * 100);
-
+                //当下载资源长度不可知时，progress.getTotalBytes()为-1，此时不能显示下载进度
+                int pro = (int) (progress.getCurrentBytes() / progress.getTotalBytes() * 100);
                 if (pro > 0) {
                     pb.setProgress(pro);
                 }
+                KLog.d("pro = " + pro + " getCurrentBytes = " + progress.getCurrentBytes() + " getTotalBytes = " + progress.getTotalBytes());
             }
 
             @Override
@@ -212,6 +233,37 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
                 tv_response.setText(e.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkHttpProxy.cancel(this);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_github:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ZhaoKaiQiang/OkHttpPlus")));
+                break;
+            case R.id.action_csdn:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/zhaokaiqiang1992")));
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

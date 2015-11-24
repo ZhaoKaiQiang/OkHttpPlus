@@ -8,9 +8,6 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-/**
- * Created by zhaokaiqiang on 15/11/23.
- */
 public class BodyWrapper {
 
     public static OkHttpClient addProgressResponseListener(OkHttpClient client, final ProgressListener progressListener) {
@@ -28,7 +25,6 @@ public class BodyWrapper {
     }
 
     public static RequestProgressBody addProgressRequestListener(RequestBody requestBody, ProgressListener progressRequestListener) {
-        //包装请求体
         return new RequestProgressBody(requestBody, progressRequestListener);
     }
 }

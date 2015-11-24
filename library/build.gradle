@@ -26,7 +26,7 @@ dependencies {
     compile 'com.github.zhaokaiqiang.klog:library:1.1.0'
 }
 
-version = "0.1.0"
+version = "0.2.0"
 def siteUrl = 'https://github.com/ZhaoKaiQiang/OkHttpPlus'
 def gitUrl = 'https://github.com/ZhaoKaiQiang/OkHttpPlus.git'
 group = "com.github.zhaokaiqiang.okhttpplus"
