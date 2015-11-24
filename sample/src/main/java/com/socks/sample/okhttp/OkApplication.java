@@ -40,8 +40,6 @@ public class OkApplication extends Application {
         } catch (KeyManagementException e) {
             e.printStackTrace();
         }
-
     }
-
 
 }

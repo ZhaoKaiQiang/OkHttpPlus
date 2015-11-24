@@ -160,6 +160,8 @@ public class UploadRequestBuilder extends RequestBuilder {
                         "form-data; name=\"" + fileKeyName + "\"; filename=\"" + fileName + "\""),
                         fileBody);
             }
+        } else {
+            throw new IllegalArgumentException("File can not be null");
         }
     }
 

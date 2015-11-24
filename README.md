@@ -10,7 +10,7 @@ OkHttpPlus是OkHttp的一个工具类，主要对Get和Post方法进行了简单
 
 如果满足不了你的需求，请发issuse。
 
-中文文档请戳[这里](http://blog.csdn.net/zhaokaiqiang1992)
+中文文档请戳[这里](http://blog.csdn.net/zhaokaiqiang1992/article/details/50016815)
 
 ##Features
 
