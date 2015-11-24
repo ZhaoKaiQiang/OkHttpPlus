@@ -1,4 +1,4 @@
-package com.socks.okhttp.plus.callback;
+package com.socks.okhttp.plus.handler;
 
 import com.socks.okhttp.plus.listener.UIProgressListener;
 import com.socks.okhttp.plus.model.Progress;
