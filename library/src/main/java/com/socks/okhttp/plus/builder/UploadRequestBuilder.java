@@ -13,8 +13,10 @@ import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.IdentityHashMap;
@@ -175,7 +177,12 @@ public class UploadRequestBuilder extends RequestBuilder {
     }
 
     @Override
-    Call execute(Callback callback) {
+    Call enqueue(Callback callback) {
+        return null;
+    }
+
+    @Override
+    Response execute() throws IOException {
         return null;
     }
 }

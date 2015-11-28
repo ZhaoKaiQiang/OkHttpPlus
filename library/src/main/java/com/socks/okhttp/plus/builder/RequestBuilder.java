@@ -5,7 +5,9 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -17,7 +19,9 @@ public abstract class RequestBuilder {
     protected Map<String, String> params;
     protected Object tag;
 
-    abstract Call execute(Callback callback);
+    abstract Call enqueue(Callback callback);
+
+    abstract Response execute() throws IOException;
 
 
     protected void appendHeaders(Request.Builder builder, Map<String, String> headers) {

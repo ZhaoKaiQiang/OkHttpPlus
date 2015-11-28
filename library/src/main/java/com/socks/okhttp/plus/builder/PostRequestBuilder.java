@@ -8,7 +8,9 @@ import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -57,7 +59,7 @@ public class PostRequestBuilder extends RequestBuilder {
 
 
     @Override
-    public Call execute(Callback callback) {
+    public Call enqueue(Callback callback) {
 
         if (TextUtils.isEmpty(url)) {
             throw new IllegalArgumentException("url can not be null !");
@@ -79,5 +81,25 @@ public class PostRequestBuilder extends RequestBuilder {
         Call call = OkHttpProxy.getInstance().newCall(request);
         call.enqueue(callback);
         return call;
+    }
+
+    @Override
+    Response execute() throws IOException {
+        if (TextUtils.isEmpty(url)) {
+            throw new IllegalArgumentException("url can not be null !");
+        }
+
+        Request.Builder builder = new Request.Builder().url(url);
+        if (tag != null) {
+            builder.tag(tag);
+        }
+        FormEncodingBuilder encodingBuilder = new FormEncodingBuilder();
+        appendParams(encodingBuilder, params);
+        appendHeaders(builder, headers);
+        builder.post(encodingBuilder.build());
+        Request request = builder.build();
+
+        Call call = OkHttpProxy.getInstance().newCall(request);
+        return call.execute();
     }
 }

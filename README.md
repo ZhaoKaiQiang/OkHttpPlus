@@ -19,6 +19,10 @@ OkHttpPlus是OkHttp的一个工具类，主要对Get和Post方法进行了简单
 - Support small size file download and upload without other library
 - Build in support for JSON Object and JSON Array parse
 
+##Update
+
+- Add sync method,enqueue is Async Method，execute is Sync Method
+
 ##Sample Usage
 
 ###Init OkHttpClient
@@ -45,7 +49,7 @@ Use OkJsonParser<User> ，you could get a User Object form json format string.
 OkHttpProxy.get()
                 .url(URL_USER)
                 .tag(this)
-                .execute(new OkCallback<User>(new OkJsonParser<User>() {
+                .enqueue(new OkCallback<User>(new OkJsonParser<User>() {
                 }) {
                     @Override
                     public void onSuccess(int code, User user) {
@@ -65,7 +69,7 @@ Use OkJsonParser<List<User>> ，you could get a list of User Object form json fo
   OkHttpProxy.get()
                 .url(URL_USER)
                 .tag(this)
-                .execute(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
+                .enqueue(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
                 }) {
                     @Override
                     public void onSuccess(int code, List<User> users) {
@@ -108,7 +112,7 @@ Then you can use as above.
 ```
 OkHttpProxy.get()
                 .url(Joke.getRequestUrl(1))
-                .tag(this).execute(new OkCallback<List<Joke>>(new JokeParser()) {
+                .tag(this).enqueue(new OkCallback<List<Joke>>(new JokeParser()) {
             @Override
             public void onSuccess(int code, List<Joke> jokes) {
                 tv_response.setText(jokes.toString());
@@ -129,7 +133,7 @@ Get String by useing OkTextParser.
  OkHttpProxy.get()
                 .url(URL_BAIDU)
                 .tag(this)
-                .execute(new OkCallback<String>(new OkTextParser()) {
+                .enqueue(new OkCallback<String>(new OkTextParser()) {
                     @Override
                     public void onSuccess(int code, String s) {
                         tv_response.setText(s);
@@ -152,7 +156,7 @@ OkHttpProxy.post()
                 .tag(this)
                 .addParams("name", "zhaokaiqiang")
                 .addHeader("header", "okhttp")
-                .execute(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
+                .enqueue(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
                 }) {
                     @Override
                     public void onSuccess(int code, ArrayList<User> users) {
@@ -248,7 +252,7 @@ OkHttpProxy.post()
 ##JCenter
 
 ```
-compile 'com.github.zhaokaiqiang.okhttpplus:library:0.2.0'
+compile 'com.github.zhaokaiqiang.okhttpplus:library:0.3.0'
 ```
 
 

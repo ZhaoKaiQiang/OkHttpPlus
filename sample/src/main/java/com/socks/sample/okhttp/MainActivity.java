@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
         OkHttpProxy.get()
                 .url(URL_USER)
                 .tag(this)
-                .execute(new OkCallback<User>(new OkJsonParser<User>() {
+                .enqueue(new OkCallback<User>(new OkJsonParser<User>() {
                 }) {
                     @Override
                     public void onSuccess(int code, User user) {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
         OkHttpProxy.get()
                 .url(URL_USER)
                 .tag(this)
-                .execute(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
+                .enqueue(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
                 }) {
                     @Override
                     public void onSuccess(int code, List<User> users) {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     public void getJokes(View view) {
         OkHttpProxy.get()
                 .url(Joke.getRequestUrl(1))
-                .tag(this).execute(new OkCallback<List<Joke>>(new JokeParser()) {
+                .tag(this).enqueue(new OkCallback<List<Joke>>(new JokeParser()) {
             @Override
             public void onSuccess(int code, List<Joke> jokes) {
                 tv_response.setText(jokes.toString());
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
         OkHttpProxy.get()
                 .url(URL_BAIDU)
                 .tag(this)
-                .execute(new OkCallback<String>(new OkTextParser()) {
+                .enqueue(new OkCallback<String>(new OkTextParser()) {
                     @Override
                     public void onSuccess(int code, String s) {
                         tv_response.setText(s);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
         OkHttpProxy.get()
                 .url(URL_12306)
                 .tag(this)
-                .execute(new OkCallback<String>(new OkTextParser()) {
+                .enqueue(new OkCallback<String>(new OkTextParser()) {
                     @Override
                     public void onSuccess(int code, String s) {
                         tv_response.setText(s);
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
                 .tag(this)
                 .addParams("name", "zhaokaiqiang")
                 .addHeader("header", "okhttp")
-                .execute(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
+                .enqueue(new OkCallback<ArrayList<User>>(new OkJsonParser<ArrayList<User>>() {
                 }) {
                     @Override
                     public void onSuccess(int code, ArrayList<User> users) {
