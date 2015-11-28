@@ -28,6 +28,7 @@ import com.socks.sample.okhttp.util.TestUrls;
 import com.squareup.okhttp.Response;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,9 +70,37 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
                 });
     }
 
+    public void getUserSync(View view) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response response = OkHttpProxy.get()
+                            .url(URL_USER)
+                            .tag(this)
+                            .execute();
+
+                    final User user = new OkJsonParser<User>() {
+                    }.parse(response);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_response.setText(user.toString());
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public void getUsers(View view) {
         OkHttpProxy.get()
-                .url(URL_USER)
+                .url(URL_USERS)
                 .tag(this)
                 .enqueue(new OkCallback<List<User>>(new OkJsonParser<List<User>>() {
                 }) {

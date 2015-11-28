@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by zhaokaiqiang on 15/11/24.
  */
-public abstract class RequestBuilder {
+public abstract class RequestBuilder<T> {
 
     protected String url;
     protected Map<String, String> params;
@@ -22,7 +22,6 @@ public abstract class RequestBuilder {
     abstract Call enqueue(Callback callback);
 
     abstract Response execute() throws IOException;
-
 
     protected void appendHeaders(Request.Builder builder, Map<String, String> headers) {
         Headers.Builder headerBuilder = new Headers.Builder();

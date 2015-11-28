@@ -27,6 +27,12 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="getUserSync"
+                android:text="Get User Sync" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:onClick="getUsers"
                 android:text="Get Users" />
             <Button

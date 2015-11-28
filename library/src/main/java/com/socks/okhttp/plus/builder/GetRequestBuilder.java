@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by zhaokaiqiang on 15/11/24.
  */
-public class GetRequestBuilder extends RequestBuilder {
+public class GetRequestBuilder<T> extends RequestBuilder<T> {
 
     public GetRequestBuilder url(String url) {
         this.url = url;

@@ -252,7 +252,7 @@ OkHttpProxy.post()
 ##JCenter
 
 ```
-compile 'com.github.zhaokaiqiang.okhttpplus:library:0.3.0'
+compile 'com.github.zhaokaiqiang.okhttpplus:library:0.4.0'
 ```
 
 

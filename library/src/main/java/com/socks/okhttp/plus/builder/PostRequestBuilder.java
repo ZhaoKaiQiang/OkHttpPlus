@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by zhaokaiqiang on 15/11/24.
  */
-public class PostRequestBuilder extends RequestBuilder {
+public class PostRequestBuilder<T> extends RequestBuilder<T> {
 
     private Map<String, String> headers;
 
@@ -84,7 +84,7 @@ public class PostRequestBuilder extends RequestBuilder {
     }
 
     @Override
-    Response execute() throws IOException {
+    public Response execute() throws IOException {
         if (TextUtils.isEmpty(url)) {
             throw new IllegalArgumentException("url can not be null !");
         }
