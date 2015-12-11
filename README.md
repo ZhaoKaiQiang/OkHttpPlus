@@ -6,8 +6,6 @@ OkHttpPlus is a tool for OkHttp
 
 OkHttpPlus是OkHttp的一个工具类，主要对Get和Post方法进行了简单封装，所有方法的回调都在UI线程完成，内置了String、JsonObject、JsonArray数据类型的解析器，封装了对小文件下载和文件上传功能，可以实现进度监听，使之满足常见的Http需求。
 
-该项目暂时处于测试阶段，__暂时不要应用到生产环境中__，请等待之后的正式版发布。
-
 如果满足不了你的需求，请发issuse。
 
 中文文档请戳[这里](http://blog.csdn.net/zhaokaiqiang1992/article/details/50016815)
