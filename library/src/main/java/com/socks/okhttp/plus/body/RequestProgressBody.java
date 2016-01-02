@@ -2,8 +2,8 @@ package com.socks.okhttp.plus.body;
 
 import com.socks.okhttp.plus.listener.ProgressListener;
 import com.socks.okhttp.plus.model.Progress;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 import java.io.IOException;
 

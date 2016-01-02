@@ -4,11 +4,12 @@ import android.text.TextUtils;
 
 import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.callback.OkCallback;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.FormBody.Builder;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.IdentityHashMap;
@@ -69,7 +70,7 @@ public class PostRequestBuilder<T> extends RequestBuilder<T> {
         if (tag != null) {
             builder.tag(tag);
         }
-        FormEncodingBuilder encodingBuilder = new FormEncodingBuilder();
+        FormBody.Builder encodingBuilder = new FormBody.Builder();
         appendParams(encodingBuilder, params);
         appendHeaders(builder, headers);
         builder.post(encodingBuilder.build());
@@ -93,7 +94,7 @@ public class PostRequestBuilder<T> extends RequestBuilder<T> {
         if (tag != null) {
             builder.tag(tag);
         }
-        FormEncodingBuilder encodingBuilder = new FormEncodingBuilder();
+        FormBody.Builder encodingBuilder = new FormBody.Builder();
         appendParams(encodingBuilder, params);
         appendHeaders(builder, headers);
         builder.post(encodingBuilder.build());

@@ -4,7 +4,7 @@ import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;

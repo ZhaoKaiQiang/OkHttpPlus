@@ -4,9 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.socks.okhttp.plus.parser.OkBaseParser;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
 package com.socks.okhttp.plus.parser;
 
 import com.google.gson.internal.$Gson$Types;
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
