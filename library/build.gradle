@@ -21,12 +21,11 @@ android {
 
 dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
-    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.google.code.gson:gson:2.4'
     compile 'com.squareup.okio:okio:1.5.0'
-    compile 'com.github.zhaokaiqiang.klog:library:1.1.0'
 }
 
-version = "0.4.0"
+version = "1.0.0"
 def siteUrl = 'https://github.com/ZhaoKaiQiang/OkHttpPlus'
 def gitUrl = 'https://github.com/ZhaoKaiQiang/OkHttpPlus.git'
 group = "com.github.zhaokaiqiang.okhttpplus"

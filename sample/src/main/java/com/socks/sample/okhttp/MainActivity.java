@@ -25,7 +25,6 @@ import com.socks.sample.okhttp.model.Joke;
 import com.socks.sample.okhttp.model.User;
 import com.socks.sample.okhttp.parser.JokeParser;
 import com.socks.sample.okhttp.util.TestUrls;
-import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements TestUrls {
 
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TestUrls {
     public void getJokes(View view) {
         OkHttpProxy.get()
                 .url(Joke.getRequestUrl(1))
-                .tag(this).enqueue(new OkCallback<List<Joke>>(new JokeParser()) {
+                .tag(this).enqueue(new OkCallback<List<Joke>>(new JokeParser<List<Joke>>()) {
             @Override
             public void onSuccess(int code, List<Joke> jokes) {
                 tv_response.setText(jokes.toString());

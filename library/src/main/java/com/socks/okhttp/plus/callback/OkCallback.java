@@ -4,11 +4,12 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.socks.okhttp.plus.parser.OkBaseParser;
+
+import java.io.IOException;
+
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.io.IOException;
 
 /**
  * Created by zhaokaiqiang on 15/11/22.
