@@ -5,9 +5,13 @@ import com.socks.okhttp.plus.builder.GetRequestBuilder;
 import com.socks.okhttp.plus.builder.PostRequestBuilder;
 import com.socks.okhttp.plus.builder.UploadRequestBuilder;
 import com.socks.okhttp.plus.listener.DownloadListener;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
+
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * Created by zhaokaiqiang on 15/11/22.
@@ -27,6 +31,10 @@ public class OkHttpProxy {
 
     public static OkHttpClient getInstance() {
         return mHttpClient == null ? init() : mHttpClient;
+    }
+
+    public static void setInstance(OkHttpClient okHttpClient) {
+        OkHttpProxy.mHttpClient = okHttpClient;
     }
 
     public static GetRequestBuilder get() {
@@ -52,7 +60,17 @@ public class OkHttpProxy {
     }
 
     public static void cancel(Object tag) {
-        getInstance().cancel(tag);
+        Dispatcher dispatcher = getInstance().dispatcher();
+        for (Call call : dispatcher.queuedCalls()) {
+            if (tag.equals(call.request().tag())) {
+                call.cancel();
+            }
+        }
+        for (Call call : dispatcher.runningCalls()) {
+            if (tag.equals(call.request().tag())) {
+                call.cancel();
+            }
+        }
     }
 
 

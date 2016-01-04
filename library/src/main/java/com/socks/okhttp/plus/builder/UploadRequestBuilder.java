@@ -5,15 +5,16 @@ import android.util.Pair;
 import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.body.BodyWrapper;
 import com.socks.okhttp.plus.listener.UploadListener;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.MultipartBody.Builder;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +107,7 @@ public class UploadRequestBuilder extends RequestBuilder {
 
     public Call start(UploadListener uploadListener) {
 
-        MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+        MultipartBody.Builder multipartBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         addParams(multipartBuilder, params);
         addFiles(multipartBuilder, file);
 
@@ -114,33 +115,34 @@ public class UploadRequestBuilder extends RequestBuilder {
         appendHeaders(builder, headers);
         Request request = builder.url(url).post(BodyWrapper.addProgressRequestListener(multipartBuilder.build(), uploadListener)).build();
 
-        OkHttpClient clone = OkHttpProxy.getInstance().clone();
+        OkHttpClient.Builder clientBuilder = OkHttpProxy.getInstance().newBuilder();
 
         if (connectTimeOut > 0) {
-            clone.setConnectTimeout(connectTimeOut, TimeUnit.MINUTES);
+            clientBuilder.connectTimeout(connectTimeOut, TimeUnit.MINUTES);
         } else {
-            clone.setConnectTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
+            clientBuilder.connectTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
         }
 
         if (writeTimeOut > 0) {
-            clone.setWriteTimeout(writeTimeOut, TimeUnit.MINUTES);
+            clientBuilder.writeTimeout(writeTimeOut, TimeUnit.MINUTES);
         } else {
-            clone.setWriteTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
+            clientBuilder.writeTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
         }
 
         if (readTimeOut > 0) {
-            clone.setWriteTimeout(readTimeOut, TimeUnit.MINUTES);
+            clientBuilder.readTimeout(readTimeOut, TimeUnit.MINUTES);
         } else {
-            clone.setWriteTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
+            clientBuilder.readTimeout(DEFAULT_TIME_OUT, TimeUnit.MINUTES);
         }
 
+        OkHttpClient clone = clientBuilder.build();
         Call call = clone.newCall(request);
         call.enqueue(uploadListener);
         return call;
     }
 
 
-    private static void addParams(MultipartBuilder builder, Map<String, String> params) {
+    private static void addParams(MultipartBody.Builder builder, Map<String, String> params) {
         if (params != null && !params.isEmpty()) {
             for (String key : params.keySet()) {
                 builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + key + "\""),
@@ -149,7 +151,7 @@ public class UploadRequestBuilder extends RequestBuilder {
         }
     }
 
-    private static void addFiles(MultipartBuilder builder, Pair<String, File>... files) {
+    private static void addFiles(MultipartBody.Builder builder, Pair<String, File>... files) {
         if (files != null) {
             RequestBody fileBody;
             for (int i = 0; i < files.length; i++) {

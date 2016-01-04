@@ -1,6 +1,6 @@
 package com.socks.okhttp.plus.parser;
 
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 
 import java.io.IOException;
 

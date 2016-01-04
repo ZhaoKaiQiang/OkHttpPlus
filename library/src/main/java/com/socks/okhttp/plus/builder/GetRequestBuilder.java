@@ -4,10 +4,10 @@ import android.text.TextUtils;
 
 import com.socks.okhttp.plus.OkHttpProxy;
 import com.socks.okhttp.plus.callback.OkCallback;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.HashMap;

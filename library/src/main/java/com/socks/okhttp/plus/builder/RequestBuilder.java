@@ -1,11 +1,12 @@
 package com.socks.okhttp.plus.builder;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.FormBody.Builder;
+import okhttp3.Headers;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,7 +34,7 @@ public abstract class RequestBuilder<T> {
         builder.headers(headerBuilder.build());
     }
 
-    protected void appendParams(FormEncodingBuilder builder, Map<String, String> params) {
+    protected void appendParams(FormBody.Builder builder, Map<String, String> params) {
 
         if (params != null && !params.isEmpty()) {
             for (String key : params.keySet()) {

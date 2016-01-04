@@ -2,8 +2,8 @@ package com.socks.okhttp.plus.body;
 
 import com.socks.okhttp.plus.listener.ProgressListener;
 import com.socks.okhttp.plus.model.Progress;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
 
@@ -33,12 +33,12 @@ public class ResponseProgressBody extends ResponseBody {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return mResponseBody.contentLength();
     }
 
     @Override
-    public BufferedSource source() throws IOException {
+    public BufferedSource source() {
         if (bufferedSource == null) {
             bufferedSource = Okio.buffer(source(mResponseBody.source()));
         }

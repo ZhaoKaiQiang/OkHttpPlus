@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.reflect.TypeToken;
 import com.socks.okhttp.plus.parser.OkJsonParser;
 import com.socks.sample.okhttp.model.Joke;
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;

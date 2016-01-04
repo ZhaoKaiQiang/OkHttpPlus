@@ -25,7 +25,7 @@ import com.socks.sample.okhttp.model.Joke;
 import com.socks.sample.okhttp.model.User;
 import com.socks.sample.okhttp.parser.JokeParser;
 import com.socks.sample.okhttp.util.TestUrls;
-import com.squareup.okhttp.Response;
+import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
