@@ -26,3 +26,6 @@ proguard/
 
 # Log Files
 *.log
+/OkHttpPlus.iml
+/OkHttpManager.iml
+/sample/sample.iml
